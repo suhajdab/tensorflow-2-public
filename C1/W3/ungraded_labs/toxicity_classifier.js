@@ -4,10 +4,10 @@
 
   // allow user input for sentences
   const sentences = (
-    await prompt(
+    (await prompt(
       "Semicolon separated phrases",
-      "You are awesome; You worthless piece of stinky trash; I'm gonna kill you all; You sucks my shoelace; I'll fuck you up"
-    )
+      "You are awesome You worthless piece of stinky trash; I'm gonna kill John Johansson;; You sucks my shoelace; I'll fuck you up"
+    )) || ""
   )
     .split(";")
     .map((s) => s.trim())
