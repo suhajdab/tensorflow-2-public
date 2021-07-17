@@ -17,6 +17,10 @@ const loadMobilenet = async () => {
   return tf.model({ inputs: mobilenet.inputs, outputs: layer.output });
 };
 
+const onBatchEnd = async (_, logs) => {
+  console.log({ ...logs });
+};
+
 const train = async () => {
   dataset.ys = null;
   dataset.encodeLabels(5);
@@ -32,23 +36,30 @@ const train = async () => {
   model = tf.sequential({
     layers: [
       // YOUR CODE HERE
+      tf.layers.flatten({ inputShape: mobilenet.outputs[0].shape.slice(1) }),
+      tf.layers.dropout({ rate: 0.25 }),
+      tf.layers.dense({ units: 128, activation: "relu" }),
+      tf.layers.dense({ units: 5, activation: "softmax" }),
     ],
   });
 
+  model.summary();
+
   // Set the optimizer to be tf.train.adam() with a learning rate of 0.0001.
-  const optimizer = // YOUR CODE HERE
-    // Compile the model using the categoricalCrossentropy loss, and
-    // the optimizer you defined above.
-    model.compile(/* YOUR CODE HERE */);
+  const optimizer = tf.train.adam(0.0001); // YOUR CODE HERE
+  // Compile the model using the categoricalCrossentropy loss, and
+  // the optimizer you defined above.
+  model.compile({
+    optimizer: optimizer,
+    loss: "categoricalCrossentropy",
+    metrics: ["accuracy"],
+  });
 
   let loss = 0;
   model.fit(dataset.xs, dataset.ys, {
-    epochs: 10,
+    epochs: 50,
     callbacks: {
-      onBatchEnd: async (batch, logs) => {
-        loss = logs.loss.toFixed(5);
-        console.log("loss: " + loss);
-      },
+      onBatchEnd,
     },
   });
 };
@@ -56,28 +67,27 @@ const train = async () => {
 const addSample = (id) => {
   switch (id) {
     case 0:
-      rockSamples++;
-      document.getElementById("rocksamples").value = rockSamples;
+      document.getElementById("rocksamples").value = ++rockSamples;
       break;
     case 1:
-      paperSamples++;
-      document.getElementById("papersamples").value = paperSamples;
+      document.getElementById("papersamples").value = ++paperSamples;
       break;
     case 2:
-      scissorsSamples++;
-      document.getElementById("scissorssamples").value = scissorsSamples;
+      document.getElementById("scissorssamples").value = ++scissorsSamples;
       break;
     case 3:
-      spockSamples++;
-      document.getElementById("spocksamples").value = spockSamples;
+      document.getElementById("spocksamples").value = ++spockSamples;
       break;
 
     // Add a case for lizard samples.
     // HINT: Look at the previous cases.
 
     // YOUR CODE HERE
+    case 4:
+      document.getElementById("lizardsamples").value = ++lizardSamples;
+      break;
   }
-  label = parseInt(elem.id);
+  label = parseInt(id);
   const img = webcam.capture();
   dataset.addExample(mobilenet.predict(img), label);
 };
@@ -94,22 +104,25 @@ const predict = async () => {
     var predictionText = "";
     switch (classId) {
       case 0:
-        predictionText = "I see Rock";
+        predictionText = "🪨";
         break;
       case 1:
-        predictionText = "I see Paper";
+        predictionText = "📃";
         break;
       case 2:
-        predictionText = "I see Scissors";
+        predictionText = "✂️";
         break;
       case 3:
-        predictionText = "I see Spock";
+        predictionText = "🖖";
         break;
 
       // Add a case for lizard samples.
       // HINT: Look at the previous cases.
 
       // YOUR CODE HERE
+      case 4:
+        predictionText = "🦎";
+        break;
     }
     document.getElementById("prediction").value = predictionText;
 
@@ -118,8 +131,8 @@ const predict = async () => {
   }
 };
 
-const doTraining = () => {
-  train();
+const doTraining = async () => {
+  await train();
   console.info("Training Done!");
 };
 

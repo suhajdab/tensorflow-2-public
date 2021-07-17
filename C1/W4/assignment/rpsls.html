@@ -3,6 +3,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="webcam.js"></script>
     <script src="rps-dataset.js"></script>
+    <style type="text/css">
+      label {
+        display: inline-block;
+        width: 160px;
+        padding: 4px 6px;
+        text-align: right;
+      }
+    </style>
   </head>
   <body>
     <div>
@@ -19,16 +27,28 @@
     </div>
     <br />
     <fieldset>
-      <button type="button" onclick="addSample(0)">Rock</button>
-      <button type="button" onclick="addSample(1)">Paper</button>
-      <button type="button" onclick="addSample(2)">Scissors</button>
-      <button type="button" onclick="addSample(3)">Spock</button>
-      <button type="button" onclick="addSample(4)">Lizard</button>
-      <div>Rock samples: <output id="rocksamples"></output></div>
-      <div>Paper samples: <output id="papersamples"></output></div>
-      <div>Scissors samples: <output id="scissorssamples"></output></div>
-      <div>Spock samples: <output id="spocksamples"></output></div>
-      <div>Lizard Samples: <output id="lizardsamples"></output></div>
+      <table>
+        <div>
+          <label>Rock samples: <output id="rocksamples" /></label>
+          <button type="button" onclick="addSample(0)">Add sample</button>
+        </div>
+        <div>
+          <label>Paper samples: <output id="papersamples" /></label>
+          <button type="button" onclick="addSample(1)">Add sample</button>
+        </div>
+        <div>
+          <label>Scissors samples: <output id="scissorssamples" /></label>
+          <button type="button" onclick="addSample(2)">Add sample</button>
+        </div>
+        <div>
+          <label>Spock samples: <output id="spocksamples" /></label>
+          <button type="button" onclick="addSample(3)">Add sample</button>
+        </div>
+        <div>
+          <label>Lizard Samples: <output id="lizardsamples" /></label>
+          <button type="button" onclick="addSample(4)">Add sample</button>
+        </div>
+      </table>
     </fieldset>
     <fieldset>
       <button type="button" id="train" onclick="doTraining()">
@@ -48,7 +68,7 @@
       <button type="button" id="saveModel" onclick="saveModel()">
         Download Model
       </button>
-      <output id="prediction"></div>
+      <output id="prediction" />
     </fieldset>
   </body>
 
